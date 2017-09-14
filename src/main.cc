@@ -25,4 +25,5 @@ main(int argc, char* argv[])
 {
     gcide_cli::DictionaryReader reader;
     gcide_cli::DictionaryEntry entry = reader.find_entry("Hello");
+    std::cout << entry.definition << std::endl;
 }

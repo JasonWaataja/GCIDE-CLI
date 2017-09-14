@@ -45,13 +45,20 @@ gcide_cli::DictionaryReader::find_entry(const std::string& name)
     if (!as_entry)
         throw ParsingError{"Failed to cast to element node."};
     DictionaryEntry entry{name};
-    /*
-     * TODO: Fix this. It only gets the first part of text, stopping at
-     * sub-tags such as <b> and not including the text contained in them.
-     */
-    std::string def_text = as_entry->get_first_child_text()->get_content();
+    std::string def_text = gather_child_text(def_node);
     entry.definition = def_text;
     return entry;
+}
+
+void
+gcide_cli::iterate_node(
+    const xmlpp::Node* node, std::function<void(const xmlpp::Node*)> func)
+{
+    if (!node)
+        return;
+    func(node);
+    for (const xmlpp::Node* child_node : node->get_children())
+        iterate_node(child_node, func);
 }
 
 const xmlpp::Node*
@@ -101,6 +108,26 @@ gcide_cli::find_def_node(const xmlpp::Node* ent_node)
             dynamic_cast<const xmlpp::Element*>(node);
         return as_element && as_element->get_name() == "def";
     });
+}
+
+std::string
+gcide_cli::gather_child_text(const xmlpp::Node* node)
+{
+    /*
+     * TODO: Consider using a vector of strings and then join later with a
+     * separator.
+     */
+    std::string text;
+    if (!node)
+        return text;
+    iterate_node(node, [&text](const xmlpp::Node* node) {
+        const xmlpp::TextNode* as_text =
+            dynamic_cast<const xmlpp::TextNode*>(node);
+        if (!as_text)
+            return;
+        text += as_text->get_content();
+    });
+    return text;
 }
 
 gcide_cli::ParsingError::ParsingError(const std::string& what_arg)

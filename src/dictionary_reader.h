@@ -50,6 +50,10 @@ private:
     xmlpp::DomParser parser;
 };
 
+/* Runs func on node and all its children recursively. */
+void iterate_node(
+    const xmlpp::Node* node, std::function<void(const xmlpp::Node*)> func);
+
 /* Returns nullptr if the node could not be found. */
 const xmlpp::Node* find_node_if(const xmlpp::Node* root,
     std::function<bool(const xmlpp::Node*)> predicate);
@@ -59,6 +63,12 @@ std::function<bool(const xmlpp::Node*)> make_ent_node_finder(
 
 /* May return nullptr at some point. */
 const xmlpp::Node* find_def_node(const xmlpp::Node* ent_node);
+
+/*
+ * Goes through each child of node and combines the text of any text nodes it
+ * finds.
+ */
+std::string gather_child_text(const xmlpp::Node* node);
 
 class ParsingError : public std::runtime_error {
 public:
