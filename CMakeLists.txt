@@ -4,3 +4,4 @@ project (gcide-cli)
 
 add_subdirectory (src)
 add_subdirectory (man)
+
