@@ -30,38 +30,49 @@ gcide_cli::DictionaryReader::DictionaryReader()
 }
 
 gcide_cli::DictionaryEntry
-gcide_cli::DictionaryReader::find_entry(const Glib::ustring& name) const
+gcide_cli::DictionaryReader::find_entry(
+    const Options& options, const Glib::ustring& name) const
 {
     const xmlpp::Node* ent_node = find_node_if(
         parser.get_document()->get_root_node(), make_ent_node_finder(name));
     if (!ent_node)
         throw EntryNotFoundError{name};
     const xmlpp::Node* p_node = ent_node->get_parent();
-    return entry_for_p_node(name, p_node);
+    return entry_for_p_node(options, name, p_node);
 }
 
 gcide_cli::DictionaryEntry
-gcide_cli::entry_for_p_node(
-    const Glib::ustring& name, const xmlpp::Node* p_node)
+gcide_cli::entry_for_p_node(const Options& options, const Glib::ustring& name,
+    const xmlpp::Node* p_node)
 {
-    const xmlpp::Node* def_node = find_element_with_name(p_node, "def");
-    if (!def_node)
-        throw ParsingError{"Failed to find definition node for entry."};
-    const xmlpp::Node* pronunciation_node =
-        find_element_with_name(p_node, "pr");
-    if (!pronunciation_node)
-        throw ParsingError{"Failed to find pronunciation node for entry."};
-    const xmlpp::Node* pos_node = find_element_with_name(p_node, "pos");
-    if (!pos_node)
-        throw ParsingError{"Failed to find part-of-speech node for entry."};
-    const xmlpp::Node* source_node = find_element_with_name(p_node, "source");
-    if (!source_node)
-        throw ParsingError{"Failed to find source for entry."};
     DictionaryEntry entry{name};
-    entry.definition = gather_child_text(def_node);
-    entry.pronunciation = gather_child_text(pronunciation_node);
-    entry.pos = gather_child_text(pos_node);
-    entry.source = gather_child_text(source_node);
+    if (options.display_definition) {
+        const xmlpp::Node* def_node = find_element_with_name(p_node, "def");
+        if (!def_node)
+            throw ParsingError{"Failed to find definition node for entry."};
+        entry.definition = gather_child_text(def_node);
+    }
+    if (options.display_pronunciation) {
+        const xmlpp::Node* pronunciation_node =
+            find_element_with_name(p_node, "pr");
+        if (!pronunciation_node)
+            throw ParsingError{"Failed to find pronunciation node for entry."};
+        entry.pronunciation = gather_child_text(pronunciation_node);
+    }
+    if (options.display_pos) {
+        const xmlpp::Node* pos_node = find_element_with_name(p_node, "pos");
+        if (!pos_node)
+            throw ParsingError{
+                "Failed to find part-of-speech node for entry."};
+        entry.pos = gather_child_text(pos_node);
+    }
+    if (options.display_source) {
+        const xmlpp::Node* source_node =
+            find_element_with_name(p_node, "source");
+        if (!source_node)
+            throw ParsingError{"Failed to find source for entry."};
+        entry.source = gather_child_text(source_node);
+    }
     return entry;
 }
 

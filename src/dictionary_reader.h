@@ -28,6 +28,7 @@
 #include <libxml++/libxml++.h>
 
 #include "dictionary_entry.h"
+#include "options.h"
 
 namespace gcide_cli {
 
@@ -43,7 +44,8 @@ public:
     DictionaryReader();
 
     /* May throw an EntryNotFoundError. */
-    DictionaryEntry find_entry(const Glib::ustring& name) const;
+    DictionaryEntry find_entry(
+        const Options& options, const Glib::ustring& name) const;
 
 private:
     xmlpp::DomParser parser;
@@ -53,7 +55,7 @@ private:
  * May throw a ParsingError. The name p_node refers both to the fact that
  * it is a <p> xml tag and the parent of the original <ent> tag found.
  */
-DictionaryEntry entry_for_p_node(
+DictionaryEntry entry_for_p_node(const Options& options,
     const Glib::ustring& name, const xmlpp::Node* p_node);
 
 class ParsingError : public std::runtime_error {

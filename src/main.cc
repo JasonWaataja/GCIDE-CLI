@@ -36,9 +36,12 @@ gcide_cli::print_word_entry(const Options& options,
     const gcide_cli::DictionaryReader& reader, const Glib::ustring& word)
 {
     try {
-        DictionaryEntry entry{reader.find_entry(word)};
+        DictionaryEntry entry{reader.find_entry(options, word)};
         std::cout << entry.to_string(options) << std::endl;
     } catch (const EntryNotFoundError& e) {
+        std::cerr << e.what() << std::endl;
+    } catch (const ParsingError& e) {
+        std::cerr << "Error while searching word " << word << std::endl;
         std::cerr << e.what() << std::endl;
     }
 }
