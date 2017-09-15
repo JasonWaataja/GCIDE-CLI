@@ -18,8 +18,8 @@
 #ifndef GCIDE_CLI_OPTION_H
 #define GCIDE_CLI_OPTION_H
 
-#include <string>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 namespace gcide_cli {
@@ -33,15 +33,15 @@ public:
     /* Words to search. */
     std::vector<std::string> words;
     /* If true, don't read from stdin. */
-    bool has_input_file = false;
+    bool has_file = false;
     /* Path of file to read words from, one per line. */
-    std::string input_file;
+    std::string file;
+    bool use_stdin = false;
 
     /* Does nothing at this point. */
     bool help = false;
     /* Does nothing at this point. */
     bool version = true;
-    /* Does nothing at this point. */
     bool display_word = false;
     /* Does nothing at this point. */
     bool display_pronunciation = false;
@@ -50,6 +50,7 @@ public:
     /* Does nothing at this point. */
     bool display_source = false;
 
+    /* May throw an OptionError, caller should print usage in that case. */
     Options(int argc, char* argv[]);
 };
 
@@ -71,6 +72,8 @@ public:
     MissingRequiredArgumentError();
     static std::string missing_required_argument_message();
 };
+
+void print_usage();
 } /* namespace gcide_cli */
 
 #endif /* GCIDE_CLI_OPTION_H */

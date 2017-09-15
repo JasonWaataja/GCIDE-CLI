@@ -15,34 +15,14 @@
  * along with GCIDE-CLI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "util.h"
 
-#ifndef GCIDE_CLI_DICTIONARY_ENTRY_H
-#define GCIDE_CLI_DICTIONARY_ENTRY_H
+#include <algorithm>
+#include <locale>
 
-#include <string>
-
-#include "options.h"
-
-namespace gcide_cli {
-
-class DictionaryEntry {
-public:
-    DictionaryEntry();
-    DictionaryEntry(const std::string& name);
-
-    std::string name;
-    std::string definition;
-    /*
-     * TODO: Add more fields here that correspond to the fields of
-     * Option.
-     */
-
-    /*
-     * Create a representation to be printed to stdout. Note: has a newline at
-     * the end.
-     */
-    std::string to_string(const Options& options) const;
-};
-} /* namespace gcide_cli */
-
-#endif /* GCIDE_CLI_DICTIONARY_ENTRY_H */
+bool
+gcide_cli::string_iequal(const std::string& s1, const std::string& s2)
+{
+    return std::equal(s1.begin(), s1.end(), s2.begin(), s2.end(),
+        [](char c1, char c2) { return std::toupper(c1) == std::toupper(c2); });
+}

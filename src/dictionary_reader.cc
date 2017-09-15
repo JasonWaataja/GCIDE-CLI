@@ -17,9 +17,12 @@
 
 #include "dictionary_reader.h"
 
+#include <iostream>
+
 #include <glibmm/convert.h>
 
-#include <iostream>
+
+#include "util.h"
 
 const char gcide_cli::DictionaryReader::DICTIONARY_PATH[] =
     "../gcide_xml-0.51/xml_files/gcide.xml";
@@ -31,7 +34,7 @@ gcide_cli::DictionaryReader::DictionaryReader()
 }
 
 gcide_cli::DictionaryEntry
-gcide_cli::DictionaryReader::find_entry(const std::string& name)
+gcide_cli::DictionaryReader::find_entry(const std::string& name) const
 {
     const xmlpp::Node* ent_node = find_node_if(
         parser.get_document()->get_root_node(), make_ent_node_finder(name));
@@ -91,7 +94,7 @@ gcide_cli::make_ent_node_finder(const std::string& name)
                 return false;
             const xmlpp::TextNode* text_node =
                 as_element->get_first_child_text();
-            return text_node && text_node->get_content() == name;
+            return text_node && string_iequal(text_node->get_content(), name);
         } catch (const Glib::ConvertError&) {
             return false;
         }

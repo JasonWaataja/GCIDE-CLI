@@ -17,6 +17,8 @@
 
 #include "dictionary_entry.h"
 
+#include "util.h"
+
 gcide_cli::DictionaryEntry::DictionaryEntry()
 {
 }
@@ -24,4 +26,16 @@ gcide_cli::DictionaryEntry::DictionaryEntry()
 gcide_cli::DictionaryEntry::DictionaryEntry(const std::string& name)
     : name{name}
 {
+}
+
+std::string
+gcide_cli::DictionaryEntry::to_string(const Options& options) const
+{
+    std::vector<std::string> elements;
+    if (options.display_word)
+        elements.push_back(name);
+    if (options.display_definition)
+        elements.push_back(definition);
+
+    return string_join(elements.begin(), elements.end());
 }

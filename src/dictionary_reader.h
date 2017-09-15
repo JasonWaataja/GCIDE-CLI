@@ -44,7 +44,7 @@ public:
     DictionaryReader();
 
     /* May throw an EntryNotFoundError. */
-    DictionaryEntry find_entry(const std::string& name);
+    DictionaryEntry find_entry(const std::string& name) const;
 
 private:
     xmlpp::DomParser parser;

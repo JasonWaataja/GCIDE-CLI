@@ -5,6 +5,8 @@ set (SOURCES
 	dictionary_entry.cc
 	dictionary_reader.cc
 	options.cc
+	word_gathering.cc
+	util.cc
 	)
 add_executable (gcide-cli ${SOURCES})
 

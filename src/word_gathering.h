@@ -15,34 +15,32 @@
  * along with GCIDE-CLI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef GCIDE_CLI_DICTIONARY_ENTRY_H
-#define GCIDE_CLI_DICTIONARY_ENTRY_H
+#ifndef GCIDE_CLI_WORD_GATHERING_H
+#define GCIDE_CLI_WORD_GATHERING_H
 
 #include <string>
+#include <vector>
 
 #include "options.h"
 
 namespace gcide_cli {
 
-class DictionaryEntry {
-public:
-    DictionaryEntry();
-    DictionaryEntry(const std::string& name);
+std::vector<std::string> gather_words(const Options& options);
 
-    std::string name;
-    std::string definition;
-    /*
-     * TODO: Add more fields here that correspond to the fields of
-     * Option.
-     */
+/* T must be able to read lines. */
+template <typename T>
+std::vector<std::string> gather_words_from_stream(T& stream);
 
-    /*
-     * Create a representation to be printed to stdout. Note: has a newline at
-     * the end.
-     */
-    std::string to_string(const Options& options) const;
-};
+template <typename T>
+std::vector<std::string>
+gather_words_from_stream(T& stream)
+{
+    std::vector<std::string> words;
+    std::string line;
+    while (std::getline(stream, line))
+        words.push_back(line);
+    return words;
+}
 } /* namespace gcide_cli */
 
-#endif /* GCIDE_CLI_DICTIONARY_ENTRY_H */
+#endif /* GCIDE_CLI_WORD_GATHERING_H */

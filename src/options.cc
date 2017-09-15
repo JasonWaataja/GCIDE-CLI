@@ -19,13 +19,14 @@
 
 #include <getopt.h>
 
-const char gcide_cli::Options::optstring[] = ":hvi:dwpPs";
+const char gcide_cli::Options::optstring[] = ":hvf:idwpPs";
 
 gcide_cli::Options::Options(int argc, char* argv[])
 {
     option long_options[]{{"help", no_argument, NULL, 'h'},
         {"version", no_argument, NULL, 'v'},
-        {"input-file", required_argument, NULL, 'i'},
+        {"file", required_argument, NULL, 'f'},
+        {"stdin", no_argument, NULL, 'i'},
         {"disable-definition", no_argument, NULL, 'd'},
         {"word", no_argument, NULL, 'w'},
         {"pronunciation", no_argument, NULL, 'p'},
@@ -48,9 +49,12 @@ gcide_cli::Options::Options(int argc, char* argv[])
         case 'v':
             version = true;
             break;
+        case 'f':
+            has_file = true;
+            file = optarg;
+            break;
         case 'i':
-            has_input_file = true;
-            input_file = optarg;
+            use_stdin = true;
             break;
         case 'w':
             display_word = true;
@@ -104,4 +108,10 @@ gcide_cli::MissingRequiredArgumentError::missing_required_argument_message()
     if (optopt != 0)
         return "Missing required argument for " + optopt;
     return "Missing required argument";
+}
+
+void
+gcide_cli::print_usage()
+{
+    /* TODO: Implement this. */
 }
