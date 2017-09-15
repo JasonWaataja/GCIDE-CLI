@@ -43,7 +43,7 @@ public:
     DictionaryReader();
 
     /* May throw an EntryNotFoundError. */
-    DictionaryEntry find_entry(const std::string& name) const;
+    DictionaryEntry find_entry(const Glib::ustring& name) const;
 
 private:
     xmlpp::DomParser parser;
@@ -54,17 +54,17 @@ private:
  * it is a <p> xml tag and the parent of the original <ent> tag found.
  */
 DictionaryEntry entry_for_p_node(
-    const std::string& name, const xmlpp::Node* p_node);
+    const Glib::ustring& name, const xmlpp::Node* p_node);
 
 class ParsingError : public std::runtime_error {
 public:
-    ParsingError(const std::string& what_arg);
+    ParsingError(const Glib::ustring& what_arg);
 };
 
 class EntryNotFoundError : public std::runtime_error {
 public:
-    EntryNotFoundError(const std::string& name);
-    std::string name;
+    EntryNotFoundError(const Glib::ustring& name);
+    Glib::ustring name;
 };
 } /* namespace gcide_cli */
 

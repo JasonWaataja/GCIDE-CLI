@@ -19,7 +19,7 @@
 #ifndef GCIDE_CLI_DICTIONARY_ENTRY_H
 #define GCIDE_CLI_DICTIONARY_ENTRY_H
 
-#include <string>
+#include <glibmm/ustring.h>
 
 #include "options.h"
 
@@ -28,19 +28,19 @@ namespace gcide_cli {
 class DictionaryEntry {
 public:
     DictionaryEntry();
-    explicit DictionaryEntry(const std::string& name);
+    explicit DictionaryEntry(const Glib::ustring& name);
 
-    std::string name;
-    std::string definition;
-    std::string pronunciation;
-    std::string pos;
-    std::string source;
+    Glib::ustring name;
+    Glib::ustring definition;
+    Glib::ustring pronunciation;
+    Glib::ustring pos;
+    Glib::ustring source;
 
     /*
      * Create a representation to be printed to stdout. Note: has a newline at
      * the end.
      */
-    std::string to_string(const Options& options) const;
+    Glib::ustring to_string(const Options& options) const;
 };
 } /* namespace gcide_cli */
 

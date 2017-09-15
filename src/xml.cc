@@ -17,8 +17,6 @@
 
 #include "xml.h"
 
-#include <glibmm/convert.h>
-
 #include "util.h"
 
 using xmlpp::Node;
@@ -52,7 +50,7 @@ gcide_cli::find_node_if(
 
 const Node*
 gcide_cli::find_node_with_name(
-    const Node* root, const std::string& name, bool case_sensitive)
+    const Node* root, const Glib::ustring& name, bool case_sensitive)
 {
     return find_node_if(root, [&name, case_sensitive](const Node* node) {
         if (case_sensitive)
@@ -63,7 +61,7 @@ gcide_cli::find_node_with_name(
 
 const Node*
 gcide_cli::find_element_with_name(
-    const Node* root, const std::string& name, bool case_sensitive)
+    const Node* root, const Glib::ustring& name, bool case_sensitive)
 {
     return find_node_if(root, [&name, case_sensitive](const Node* node) {
         const xmlpp::Element* as_element =
@@ -77,34 +75,28 @@ gcide_cli::find_element_with_name(
 }
 
 std::function<bool(const Node*)>
-gcide_cli::make_ent_node_finder(const std::string& name)
+gcide_cli::make_ent_node_finder(const Glib::ustring& name)
 {
     return [name](const Node* node) -> bool {
-        /* Parsing fails if there's a special symbol in the middle. */
-        try {
-            const xmlpp::Element* as_element =
-                dynamic_cast<const xmlpp::Element*>(node);
-            if (!as_element)
-                return false;
-            if (as_element->get_name() != "ent")
-                return false;
-            const xmlpp::TextNode* text_node =
-                as_element->get_first_child_text();
-            return text_node && string_iequal(text_node->get_content(), name);
-        } catch (const Glib::ConvertError&) {
+        const xmlpp::Element* as_element =
+            dynamic_cast<const xmlpp::Element*>(node);
+        if (!as_element)
             return false;
-        }
+        if (as_element->get_name() != "ent")
+            return false;
+        const xmlpp::TextNode* text_node = as_element->get_first_child_text();
+        return text_node && string_iequal(text_node->get_content(), name);
     };
 }
 
-std::string
+Glib::ustring
 gcide_cli::gather_child_text(const Node* node)
 {
     /*
      * TODO: Consider using a vector of strings and then join later with a
      * separator.
      */
-    std::string text;
+    Glib::ustring text;
     if (!node)
         return text;
     iterate_node(node, [&text](const Node* node) {

@@ -27,13 +27,13 @@
 namespace gcide_cli {
 
 void print_word_entry(const Options& options, const DictionaryReader& reader,
-    const std::string& word);
+    const Glib::ustring& word);
 
 } /* namespace gcide_cli */
 
 void
 gcide_cli::print_word_entry(const Options& options,
-    const gcide_cli::DictionaryReader& reader, const std::string& word)
+    const gcide_cli::DictionaryReader& reader, const Glib::ustring& word)
 {
     try {
         DictionaryEntry entry{reader.find_entry(word)};
@@ -53,12 +53,12 @@ main(int argc, char* argv[])
          * words.
          */
         /* Don't parse the dictionary if there are no words. */
-        std::vector<std::string> words{gcide_cli::gather_words(options)};
+        std::vector<Glib::ustring> words{gcide_cli::gather_words(options)};
         if (words.empty())
             return EXIT_SUCCESS;
         gcide_cli::DictionaryReader dict_reader;
         bool on_first = true;
-        for (const std::string& word : words) {
+        for (const Glib::ustring& word : words) {
             if (!on_first)
                 std::cout << std::endl;
             else

@@ -18,8 +18,7 @@
 #ifndef GCIDE_CLI_UTIL_H
 #define GCIDE_CLI_UTIL_H
 
-#include <sstream>
-#include <string>
+#include <glibmm/ustring.h>
 
 namespace gcide_cli {
 
@@ -28,31 +27,31 @@ namespace gcide_cli {
  * dependency or use glib's g_ascii_strncasecmp or g_utf8_casefold/strcmp.
  */
 /* Case insensitive string comparison. */
-bool string_iequal(const std::string& s1, const std::string& s2);
+bool string_iequal(const Glib::ustring& s1, const Glib::ustring& s2);
 
 /*
  * Combine each string element in the range [first, last), separated by
  * separator. T is an iterator that dereferences to a string.
  */
 template <typename T>
-std::string string_join(T first, T last, std::string separator = "\n");
+Glib::ustring string_join(T first, T last, Glib::ustring separator = "\n");
 
 } /* namespace gcide_cli */
 
 template <typename T>
-std::string
-gcide_cli::string_join(T first, T last, std::string separator)
+Glib::ustring
+gcide_cli::string_join(T first, T last, Glib::ustring separator)
 {
-    std::ostringstream str;
+    Glib::ustring str;
     bool on_first = true;
     for (auto iter = first; iter != last; ++iter) {
         if (!on_first)
-            str << separator;
+            str += separator;
         else
             on_first = false;
-        str << *iter;
+        str += *iter;
     }
-    return str.str();
+    return str;
 }
 
 #endif /* GCIDE_CLI_UTIL_H */

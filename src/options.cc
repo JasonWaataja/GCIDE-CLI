@@ -79,7 +79,7 @@ gcide_cli::Options::Options(int argc, char* argv[])
         words.push_back(argv[i]);
 }
 
-gcide_cli::OptionError::OptionError(const std::string& what_arg)
+gcide_cli::OptionError::OptionError(const Glib::ustring& what_arg)
     : std::runtime_error{what_arg}
 {
 }
@@ -89,7 +89,7 @@ gcide_cli::UnknownOptionError::UnknownOptionError()
 {
 }
 
-std::string
+Glib::ustring
 gcide_cli::UnknownOptionError::unknown_option_message()
 {
     if (optopt != 0)
@@ -102,7 +102,7 @@ gcide_cli::MissingRequiredArgumentError::MissingRequiredArgumentError()
 {
 }
 
-std::string
+Glib::ustring
 gcide_cli::MissingRequiredArgumentError::missing_required_argument_message()
 {
     if (optopt != 0)

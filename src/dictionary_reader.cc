@@ -30,7 +30,7 @@ gcide_cli::DictionaryReader::DictionaryReader()
 }
 
 gcide_cli::DictionaryEntry
-gcide_cli::DictionaryReader::find_entry(const std::string& name) const
+gcide_cli::DictionaryReader::find_entry(const Glib::ustring& name) const
 {
     const xmlpp::Node* ent_node = find_node_if(
         parser.get_document()->get_root_node(), make_ent_node_finder(name));
@@ -41,7 +41,8 @@ gcide_cli::DictionaryReader::find_entry(const std::string& name) const
 }
 
 gcide_cli::DictionaryEntry
-gcide_cli::entry_for_p_node(const std::string& name, const xmlpp::Node* p_node)
+gcide_cli::entry_for_p_node(
+    const Glib::ustring& name, const xmlpp::Node* p_node)
 {
     const xmlpp::Node* def_node = find_element_with_name(p_node, "def");
     if (!def_node)
@@ -64,12 +65,12 @@ gcide_cli::entry_for_p_node(const std::string& name, const xmlpp::Node* p_node)
     return entry;
 }
 
-gcide_cli::ParsingError::ParsingError(const std::string& what_arg)
+gcide_cli::ParsingError::ParsingError(const Glib::ustring& what_arg)
     : std::runtime_error{what_arg}
 {
 }
 
-gcide_cli::EntryNotFoundError::EntryNotFoundError(const std::string& name)
+gcide_cli::EntryNotFoundError::EntryNotFoundError(const Glib::ustring& name)
     : std::runtime_error{"Failed to find entry for " + name}, name{name}
 {
 }

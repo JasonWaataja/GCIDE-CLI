@@ -1,0 +1,50 @@
+.TH GCIDE-CLI 1
+.SH NAME
+gcide-cli \- Command line tool for searching the GCIDE
+.SH SYNOPSIS
+gcide-cli [OPTIONS] [-f file|-i] [WORDS...]
+.SH DESCRIPTION
+Search for words in the GCIDE and write them to standard output. This can be
+from the command line, standard input, or a file where each line is searched for
+as a word. It is possible to use any combination of these methods at once. It is
+also possible to specify what information to output.
+.SH OPTIONS
+.IP "--help, -h"
+Print usage.
+.IP "--version -v"
+Print version string.
+.IP "--file FILE, -f FILE"
+Read words from FILE, one per line.
+.IP "--stdin, -i"
+Read words from stdin.
+.IP "--disable-definition, -d"
+Don't output definitions, use this if you just want things such as
+pronunciation.
+.IP "--word, -w"
+Output the word that is being defined before any other information.
+.IP "--pronunciation, -p"
+Output the pronunciation of the word.
+.IP "--part-of-speech, -P"
+Output the part of speech, such adjective or verb, etc.
+.IP "--source, -s"
+Output the source from which each definition comes from.
+.SH EXAMPLES
+Define "Hello"
+.nf
+
+gcide-cli Hello
+.fi
+
+Define words in the file words.txt and print their name as well.
+.nf
+
+gcide-cli -f words.txt -w
+.fi
+
+Read words from stdin and write their pronunciation to stdout.
+.nf
+
+echo "Hello" | gcide-cli -i -d -p
+.fi
+.SH AUTHOR
+Jason Waataja <jasonswaataja@gmail.com>

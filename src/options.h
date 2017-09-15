@@ -19,8 +19,9 @@
 #define GCIDE_CLI_OPTION_H
 
 #include <stdexcept>
-#include <string>
 #include <vector>
+
+#include <glibmm/ustring.h>
 
 namespace gcide_cli {
 
@@ -31,11 +32,11 @@ public:
     /* Should the definition of each word be displayed? Usually true. */
     bool display_definition = true;
     /* Words to search. */
-    std::vector<std::string> words;
+    std::vector<Glib::ustring> words;
     /* If true, don't read from stdin. */
     bool has_file = false;
     /* Path of file to read words from, one per line. */
-    std::string file;
+    Glib::ustring file;
     bool use_stdin = false;
 
     /* Does nothing at this point. */
@@ -56,21 +57,21 @@ public:
 
 class OptionError : public std::runtime_error {
 public:
-    OptionError(const std::string& what_arg);
+    OptionError(const Glib::ustring& what_arg);
 };
 
 class UnknownOptionError : public OptionError {
 public:
     /* Deduces error message from getopt global variables. */
     UnknownOptionError();
-    static std::string unknown_option_message();
+    static Glib::ustring unknown_option_message();
 };
 
 class MissingRequiredArgumentError : public OptionError {
 public:
     /* Deduces error message from getopt global variables. */
     MissingRequiredArgumentError();
-    static std::string missing_required_argument_message();
+    static Glib::ustring missing_required_argument_message();
 };
 
 void print_usage();

@@ -23,15 +23,15 @@ gcide_cli::DictionaryEntry::DictionaryEntry()
 {
 }
 
-gcide_cli::DictionaryEntry::DictionaryEntry(const std::string& name)
+gcide_cli::DictionaryEntry::DictionaryEntry(const Glib::ustring& name)
     : name{name}
 {
 }
 
-std::string
+Glib::ustring
 gcide_cli::DictionaryEntry::to_string(const Options& options) const
 {
-    std::vector<std::string> elements;
+    std::vector<Glib::ustring> elements;
     if (options.display_word)
         elements.push_back(name);
     if (options.display_definition)

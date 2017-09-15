@@ -19,7 +19,8 @@
 #define GCIDE_CLI_XML_H
 
 #include <functional>
-#include <string>
+
+#include <glibmm/ustring.h>
 
 #include <libxml++/libxml++.h>
 
@@ -35,19 +36,19 @@ const xmlpp::Node* find_node_if(const xmlpp::Node* root,
 
 /* Not case sensitive by default. */
 const xmlpp::Node* find_node_with_name(const xmlpp::Node* root,
-    const std::string& name, bool case_sensitive = false);
+    const Glib::ustring& name, bool case_sensitive = false);
 
 const xmlpp::Node* find_element_with_name(const xmlpp::Node* root,
-    const std::string& name, bool case_sensitive = false);
+    const Glib::ustring& name, bool case_sensitive = false);
 
 std::function<bool(const xmlpp::Node*)> make_ent_node_finder(
-    const std::string& name);
+    const Glib::ustring& name);
 
 /*
  * Goes through each child of node and combines the text of any text nodes it
  * finds.
  */
-std::string gather_child_text(const xmlpp::Node* node);
+Glib::ustring gather_child_text(const xmlpp::Node* node);
 
 } /* namespace gcide_cli */
 

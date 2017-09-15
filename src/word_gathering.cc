@@ -20,23 +20,25 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
-#include <string>
 
-std::vector<std::string>
+#include <glibmm/ustring.h>
+
+std::vector<Glib::ustring>
 gcide_cli::gather_words(const Options& options)
 {
     /* Start with the words included as argument. */
-    std::vector<std::string> words{options.words};
+    std::vector<Glib::ustring> words{options.words};
     if (options.has_file) {
         std::ifstream reader{options.file};
         if (!reader.is_open())
             throw std::runtime_error{"Failed to open file " + options.file};
-        std::vector<std::string> file_words{gather_words_from_stream(reader)};
+        std::vector<Glib::ustring> file_words{
+            gather_words_from_stream(reader)};
         words.insert(words.end(), file_words.begin(), file_words.end());
         return words;
     }
     if (options.use_stdin) {
-        std::vector<std::string> input_words{
+        std::vector<Glib::ustring> input_words{
             gather_words_from_stream(std::cin)};
         words.insert(words.end(), input_words.begin(), input_words.end());
     }

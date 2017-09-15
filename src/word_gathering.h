@@ -21,21 +21,23 @@
 #include <string>
 #include <vector>
 
+#include <glibmm/ustring.h>
+
 #include "options.h"
 
 namespace gcide_cli {
 
-std::vector<std::string> gather_words(const Options& options);
+std::vector<Glib::ustring> gather_words(const Options& options);
 
 /* T must be able to read lines. */
 template <typename T>
-std::vector<std::string> gather_words_from_stream(T& stream);
+std::vector<Glib::ustring> gather_words_from_stream(T& stream);
 
 template <typename T>
-std::vector<std::string>
+std::vector<Glib::ustring>
 gather_words_from_stream(T& stream)
 {
-    std::vector<std::string> words;
+    std::vector<Glib::ustring> words;
     std::string line;
     while (std::getline(stream, line))
         words.push_back(line);
