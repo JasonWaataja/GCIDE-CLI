@@ -48,8 +48,15 @@ main(int argc, char* argv[])
 {
     try {
         gcide_cli::Options options(argc, argv);
-        gcide_cli::DictionaryReader dict_reader;
+        /*
+         * TODO: Decide whether or not to print an error message with no
+         * words.
+         */
+        /* Don't parse the dictionary if there are no words. */
         std::vector<std::string> words{gcide_cli::gather_words(options)};
+        if (words.empty())
+            return EXIT_SUCCESS;
+        gcide_cli::DictionaryReader dict_reader;
         bool on_first = true;
         for (const std::string& word : words) {
             if (!on_first)

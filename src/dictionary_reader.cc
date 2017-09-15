@@ -21,11 +21,12 @@
 
 #include <glibmm/convert.h>
 
-
+#include "config.h"
 #include "util.h"
 
 const char gcide_cli::DictionaryReader::DICTIONARY_PATH[] =
-    "../gcide_xml-0.51/xml_files/gcide.xml";
+    CMAKE_INSTALL_PREFIX
+    "/share/gcide-cli/gcide_xml-0.51/xml_files/gcide.xml";
 
 gcide_cli::DictionaryReader::DictionaryReader()
 {
