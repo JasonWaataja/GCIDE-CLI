@@ -28,14 +28,13 @@ namespace gcide_cli {
 class DictionaryEntry {
 public:
     DictionaryEntry();
-    DictionaryEntry(const std::string& name);
+    explicit DictionaryEntry(const std::string& name);
 
     std::string name;
     std::string definition;
-    /*
-     * TODO: Add more fields here that correspond to the fields of
-     * Option.
-     */
+    std::string pronunciation;
+    std::string pos;
+    std::string source;
 
     /*
      * Create a representation to be printed to stdout. Note: has a newline at

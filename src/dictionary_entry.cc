@@ -36,6 +36,12 @@ gcide_cli::DictionaryEntry::to_string(const Options& options) const
         elements.push_back(name);
     if (options.display_definition)
         elements.push_back(definition);
+    if (options.display_pronunciation)
+        elements.push_back(pronunciation);
+    if (options.display_pos)
+        elements.push_back(pos);
+    if (options.display_source)
+        elements.push_back(source);
 
     return string_join(elements.begin(), elements.end());
 }

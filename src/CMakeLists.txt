@@ -7,6 +7,7 @@ set (SOURCES
 	options.cc
 	word_gathering.cc
 	util.cc
+	xml.cc
 	)
 add_executable (gcide-cli ${SOURCES})
 
