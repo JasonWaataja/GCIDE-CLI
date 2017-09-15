@@ -73,8 +73,6 @@ public:
     MissingRequiredArgumentError();
     static Glib::ustring missing_required_argument_message();
 };
-
-void print_usage();
 } /* namespace gcide_cli */
 
 #endif /* GCIDE_CLI_OPTION_H */

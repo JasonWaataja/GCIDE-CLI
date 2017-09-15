@@ -19,6 +19,7 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "config.h"
 #include "dictionary_entry.h"
 #include "dictionary_reader.h"
 #include "options.h"
@@ -28,6 +29,10 @@ namespace gcide_cli {
 
 void print_word_entry(const Options& options, const DictionaryReader& reader,
     const Glib::ustring& word);
+
+void print_version();
+
+void print_usage();
 
 } /* namespace gcide_cli */
 
@@ -46,11 +51,32 @@ gcide_cli::print_word_entry(const Options& options,
     }
 }
 
+void
+gcide_cli::print_version()
+{
+    std::cout << GCIDE_CLI_VERSION_STRING << std::endl;
+}
+
+void
+gcide_cli::print_usage()
+{
+    std::cout << "Usage: gcide-cli [OPTIONS] [-f file|-i] [WORDS...]"
+              << std::endl;
+}
+
 int
 main(int argc, char* argv[])
 {
     try {
         gcide_cli::Options options(argc, argv);
+        if (options.help) {
+            gcide_cli::print_usage();
+            return EXIT_SUCCESS;
+        }
+        if (options.version) {
+            gcide_cli::print_version();
+            return EXIT_SUCCESS;
+        }
         /*
          * TODO: Decide whether or not to print an error message with no
          * words.

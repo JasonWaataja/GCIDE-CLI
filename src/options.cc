@@ -109,9 +109,3 @@ gcide_cli::MissingRequiredArgumentError::missing_required_argument_message()
         return "Missing required argument for " + optopt;
     return "Missing required argument";
 }
-
-void
-gcide_cli::print_usage()
-{
-    /* TODO: Implement this. */
-}

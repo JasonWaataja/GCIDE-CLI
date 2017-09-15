@@ -21,7 +21,8 @@
 #include "xml.h"
 
 const char gcide_cli::DictionaryReader::DICTIONARY_PATH[] =
-    CMAKE_INSTALL_PREFIX "/share/gcide-cli/gcide_xml-0.51/xml_files/gcide.xml";
+    GCIDE_CLI_CMAKE_INSTALL_PREFIX
+    "/share/gcide-cli/gcide_xml-0.51/xml_files/gcide.xml";
 
 gcide_cli::DictionaryReader::DictionaryReader()
 {
