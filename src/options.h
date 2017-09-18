@@ -42,7 +42,7 @@ public:
     /* Does nothing at this point. */
     bool help = false;
     /* Does nothing at this point. */
-    bool version = true;
+    bool version = false;
     bool display_word = false;
     /* Does nothing at this point. */
     bool display_pronunciation = false;
