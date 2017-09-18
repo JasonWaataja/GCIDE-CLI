@@ -23,13 +23,24 @@ using xmlpp::Node;
 
 void
 gcide_cli::iterate_node(
-    const Node* node, std::function<void(const Node*)> func)
+    const Node* node, std::function<bool(const Node*)> func)
+{
+    iterate_node_helper(node, func);
+}
+
+bool
+gcide_cli::iterate_node_helper(
+    const Node* node, std::function<bool(const Node*)> func)
 {
     if (!node)
-        return;
-    func(node);
-    for (const Node* child_node : node->get_children())
-        iterate_node(child_node, func);
+        return true;
+    if (!func(node))
+        return false;
+    for (const Node* child_node : node->get_children()) {
+        if (!iterate_node_helper(child_node, func))
+            return false;
+    }
+    return true;
 }
 
 const Node*
@@ -103,8 +114,9 @@ gcide_cli::gather_child_text(const Node* node)
         const xmlpp::TextNode* as_text =
             dynamic_cast<const xmlpp::TextNode*>(node);
         if (!as_text)
-            return;
+            return true;
         text += as_text->get_content();
+        return true;
     });
     return text;
 }

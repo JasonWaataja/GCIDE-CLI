@@ -21,14 +21,19 @@
 #include <functional>
 
 #include <glibmm/ustring.h>
-
 #include <libxml++/libxml++.h>
 
 namespace gcide_cli {
 
-/* Runs func on node and all its children recursively. */
+/*
+ * Runs func on node and all its children recursively. Handler should return
+ * true to continue, false to stop iteration.
+ */
 void iterate_node(
-    const xmlpp::Node* node, std::function<void(const xmlpp::Node*)> func);
+    const xmlpp::Node* node, std::function<bool(const xmlpp::Node*)> func);
+
+bool iterate_node_helper(
+    const xmlpp::Node* node, std::function<bool(const xmlpp::Node*)> func);
 
 /* Returns nullptr if the node could not be found. */
 const xmlpp::Node* find_node_if(const xmlpp::Node* root,
