@@ -27,29 +27,10 @@
 
 namespace gcide_cli {
 
-void print_word_entry(const Options& options, const DictionaryReader& reader,
-    const Glib::ustring& word);
-
 void print_version();
-
 void print_usage();
 
 } /* namespace gcide_cli */
-
-void
-gcide_cli::print_word_entry(const Options& options,
-    const gcide_cli::DictionaryReader& reader, const Glib::ustring& word)
-{
-    try {
-        DictionaryEntry entry{reader.find_entry(options, word)};
-        std::cout << entry.to_string(options) << std::endl;
-    } catch (const EntryNotFoundError& e) {
-        std::cerr << e.what() << std::endl;
-    } catch (const ParsingError& e) {
-        std::cerr << "Error while searching word " << word << std::endl;
-        std::cerr << e.what() << std::endl;
-    }
-}
 
 void
 gcide_cli::print_version()
@@ -86,14 +67,7 @@ main(int argc, char* argv[])
         if (words.empty())
             return EXIT_SUCCESS;
         gcide_cli::DictionaryReader dict_reader;
-        bool on_first = true;
-        for (const Glib::ustring& word : words) {
-            if (!on_first)
-                std::cout << std::endl;
-            else
-                on_first = false;
-            print_word_entry(options, dict_reader, word);
-        }
+        dict_reader.print_word_entries(options, words);
     } catch (const gcide_cli::OptionError& e) {
         std::cerr << "Error parsing options:" << std::endl;
         std::cerr << e.what() << std::endl;
