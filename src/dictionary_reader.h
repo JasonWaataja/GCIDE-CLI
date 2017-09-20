@@ -1,30 +1,29 @@
 /*
- * Copyright (c) 2017 Jason Waataja
+ * This file is part of GCIDE-CLI.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * GCIDE-CLI is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * GCIDE-CLI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with GCIDE-CLI.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef GCIDE_CLI_DICTIONARY_READER_H
 #define GCIDE_CLI_DICTIONARY_READER_H
 
+#include <map>
+#include <memory>
 #include <stdexcept>
+#include <vector>
 
+#include <glibmm/ustring.h>
 #include <libxml++/libxml++.h>
 
 #include "dictionary_entry.h"
@@ -39,13 +38,22 @@ public:
     static const char DICTIONARY_PATH[];
 
     /*
-     * Long constructor, requires parsing dictionary. May throw a ParsingError.
+     * Long constructor, requires parsing dictionary. May throw a ParsingError
+     * but only if the dictionary is installed incorrectly.
      */
     DictionaryReader();
 
-    /* May throw an EntryNotFoundError. */
-    DictionaryEntry find_entry(
-        const Options& options, const Glib::ustring& name) const;
+    void print_word_entries(
+        const Options& options, const std::vector<Glib::ustring>& words);
+    /*
+     * A null pointer for the entry indictates it wasn't found. Removes entries
+     * from words when they're found.
+     */
+    std::map<Glib::ustring, std::shared_ptr<DictionaryEntry>> find_entries(
+        const Options& options, std::vector<Glib::ustring>& words);
+    static void check_node(const xmlpp::Node* node, const Options& options,
+        std::vector<Glib::ustring>& words,
+        std::map<Glib::ustring, std::shared_ptr<DictionaryEntry>>& results);
 
 private:
     xmlpp::DomParser parser;
@@ -57,6 +65,7 @@ private:
  */
 DictionaryEntry entry_for_p_node(const Options& options,
     const Glib::ustring& name, const xmlpp::Node* p_node);
+bool is_matching_p_node(const xmlpp::Node* node, const Glib::ustring& name);
 
 class ParsingError : public std::runtime_error {
 public:

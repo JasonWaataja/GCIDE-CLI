@@ -23,13 +23,24 @@ using xmlpp::Node;
 
 void
 gcide_cli::iterate_node(
-    const Node* node, std::function<void(const Node*)> func)
+    const Node* node, std::function<bool(const Node*)> func)
+{
+    iterate_node_helper(node, func);
+}
+
+bool
+gcide_cli::iterate_node_helper(
+    const Node* node, std::function<bool(const Node*)> func)
 {
     if (!node)
-        return;
-    func(node);
-    for (const Node* child_node : node->get_children())
-        iterate_node(child_node, func);
+        return true;
+    if (!func(node))
+        return false;
+    for (const Node* child_node : node->get_children()) {
+        if (!iterate_node_helper(child_node, func))
+            return false;
+    }
+    return true;
 }
 
 const Node*
@@ -59,19 +70,22 @@ gcide_cli::find_node_with_name(
     });
 }
 
-const Node*
+const xmlpp::Element*
 gcide_cli::find_element_with_name(
     const Node* root, const Glib::ustring& name, bool case_sensitive)
 {
-    return find_node_if(root, [&name, case_sensitive](const Node* node) {
-        const xmlpp::Element* as_element =
-            dynamic_cast<const xmlpp::Element*>(node);
-        if (!node)
-            return false;
-        if (case_sensitive)
-            return name == as_element->get_name();
-        return string_iequal(name, node->get_name());
-    });
+    const Node* node{
+        find_node_if(root, [&name, case_sensitive](const Node* node) {
+            const xmlpp::Element* as_element{
+                dynamic_cast<const xmlpp::Element*>(node)};
+            if (!node)
+                return false;
+            if (case_sensitive)
+                return name == as_element->get_name();
+            return string_iequal(name, node->get_name());
+        })};
+    /* This might be able to be a safe static_cast. */
+    return dynamic_cast<const xmlpp::Element*>(node);
 }
 
 std::function<bool(const Node*)>
@@ -103,8 +117,9 @@ gcide_cli::gather_child_text(const Node* node)
         const xmlpp::TextNode* as_text =
             dynamic_cast<const xmlpp::TextNode*>(node);
         if (!as_text)
-            return;
+            return true;
         text += as_text->get_content();
+        return true;
     });
     return text;
 }
