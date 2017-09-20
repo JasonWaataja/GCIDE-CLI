@@ -70,19 +70,22 @@ gcide_cli::find_node_with_name(
     });
 }
 
-const Node*
+const xmlpp::Element*
 gcide_cli::find_element_with_name(
     const Node* root, const Glib::ustring& name, bool case_sensitive)
 {
-    return find_node_if(root, [&name, case_sensitive](const Node* node) {
-        const xmlpp::Element* as_element =
-            dynamic_cast<const xmlpp::Element*>(node);
-        if (!node)
-            return false;
-        if (case_sensitive)
-            return name == as_element->get_name();
-        return string_iequal(name, node->get_name());
-    });
+    const Node* node{
+        find_node_if(root, [&name, case_sensitive](const Node* node) {
+            const xmlpp::Element* as_element{
+                dynamic_cast<const xmlpp::Element*>(node)};
+            if (!node)
+                return false;
+            if (case_sensitive)
+                return name == as_element->get_name();
+            return string_iequal(name, node->get_name());
+        })};
+    /* This might be able to be a safe static_cast. */
+    return dynamic_cast<const xmlpp::Element*>(node);
 }
 
 std::function<bool(const Node*)>

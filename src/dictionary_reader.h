@@ -18,8 +18,12 @@
 #ifndef GCIDE_CLI_DICTIONARY_READER_H
 #define GCIDE_CLI_DICTIONARY_READER_H
 
+#include <map>
+#include <memory>
 #include <stdexcept>
+#include <vector>
 
+#include <glibmm/ustring.h>
 #include <libxml++/libxml++.h>
 
 #include "dictionary_entry.h"
@@ -34,13 +38,22 @@ public:
     static const char DICTIONARY_PATH[];
 
     /*
-     * Long constructor, requires parsing dictionary. May throw a ParsingError.
+     * Long constructor, requires parsing dictionary. May throw a ParsingError
+     * but only if the dictionary is installed incorrectly.
      */
     DictionaryReader();
 
-    /* May throw an EntryNotFoundError. */
-    DictionaryEntry find_entry(
-        const Options& options, const Glib::ustring& name) const;
+    void print_word_entries(
+        const Options& options, const std::vector<Glib::ustring>& words);
+    /*
+     * A null pointer for the entry indictates it wasn't found. Removes entries
+     * from words when they're found.
+     */
+    std::map<Glib::ustring, std::shared_ptr<DictionaryEntry>> find_entries(
+        const Options& options, std::vector<Glib::ustring>& words);
+    static void check_node(const xmlpp::Node* node, const Options& options,
+        std::vector<Glib::ustring>& words,
+        std::map<Glib::ustring, std::shared_ptr<DictionaryEntry>>& results);
 
 private:
     xmlpp::DomParser parser;
@@ -52,6 +65,7 @@ private:
  */
 DictionaryEntry entry_for_p_node(const Options& options,
     const Glib::ustring& name, const xmlpp::Node* p_node);
+bool is_matching_p_node(const xmlpp::Node* node, const Glib::ustring& name);
 
 class ParsingError : public std::runtime_error {
 public:

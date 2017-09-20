@@ -17,7 +17,11 @@
 
 #include "dictionary_reader.h"
 
+#include <algorithm>
+#include <iostream>
+
 #include "config.h"
+#include "util.h"
 #include "xml.h"
 
 const char gcide_cli::DictionaryReader::DICTIONARY_PATH[] =
@@ -30,16 +34,80 @@ gcide_cli::DictionaryReader::DictionaryReader()
     parser.parse_file(DICTIONARY_PATH);
 }
 
-gcide_cli::DictionaryEntry
-gcide_cli::DictionaryReader::find_entry(
-    const Options& options, const Glib::ustring& name) const
+void
+gcide_cli::DictionaryReader::print_word_entries(
+    const Options& options, const std::vector<Glib::ustring>& words)
 {
-    const xmlpp::Node* ent_node = find_node_if(
-        parser.get_document()->get_root_node(), make_ent_node_finder(name));
+    auto remaining_words = words;
+    auto results = find_entries(options, remaining_words);
+    bool on_first = true;
+    for (const Glib::ustring& word : words) {
+        auto entry = results[word];
+        if (!on_first)
+            std::cout << std::endl;
+        else
+            on_first = false;
+        if (entry)
+            std::cout << entry->to_string(options) << std::endl;
+        else
+            std::cerr << "Failed to find entry for " << word << std::endl;
+    }
+}
+
+std::map<Glib::ustring, std::shared_ptr<gcide_cli::DictionaryEntry>>
+gcide_cli::DictionaryReader::find_entries(
+    const Options& options, std::vector<Glib::ustring>& words)
+{
+    std::map<Glib::ustring, std::shared_ptr<DictionaryEntry>> results;
+    for (const Glib::ustring& word : words)
+        results[word] = std::shared_ptr<DictionaryEntry>{};
+    iterate_node(
+        parser.get_document()->get_root_node(), [&](const xmlpp::Node* node) {
+            check_node(node, options, words, results);
+            /* Stop if all the words are exhausted. */
+            return !words.empty();
+        });
+    return results;
+}
+
+void
+gcide_cli::DictionaryReader::check_node(const xmlpp::Node* node,
+    const Options& options, std::vector<Glib::ustring>& words,
+    std::map<Glib::ustring, std::shared_ptr<DictionaryEntry>>& results)
+{
+    const xmlpp::Element* element_node{find_element_with_name(node, "ent")};
+    if (!element_node)
+        return;
+    for (const Glib::ustring& word : words) {
+        if (is_matching_p_node(node, word)) {
+            try {
+                auto entry = std::make_shared<DictionaryEntry>(
+                    entry_for_p_node(options, word, node));
+                results[word] = entry;
+                words.erase(std::remove(words.begin(), words.end(), word),
+                    words.end());
+            } catch (const ParsingError& e) {
+                std::cerr << "Error while searching word " << word
+                          << std::endl;
+                std::cerr << e.what() << std::endl;
+            }
+        }
+    }
+}
+
+bool
+gcide_cli::is_matching_p_node(
+    const xmlpp::Node* node, const Glib::ustring& name)
+{
+    if (node->get_name() != "p")
+        return false;
+    if (!node)
+        return false;
+    const xmlpp::Element* ent_node = find_element_with_name(node, "ent");
     if (!ent_node)
-        throw EntryNotFoundError{name};
-    const xmlpp::Node* p_node = ent_node->get_parent();
-    return entry_for_p_node(options, name, p_node);
+        return false;
+    const xmlpp::TextNode* text_node = ent_node->get_first_child_text();
+    return text_node && string_iequal(text_node->get_content(), name);
 }
 
 gcide_cli::DictionaryEntry

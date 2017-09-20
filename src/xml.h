@@ -43,7 +43,7 @@ const xmlpp::Node* find_node_if(const xmlpp::Node* root,
 const xmlpp::Node* find_node_with_name(const xmlpp::Node* root,
     const Glib::ustring& name, bool case_sensitive = false);
 
-const xmlpp::Node* find_element_with_name(const xmlpp::Node* root,
+const xmlpp::Element* find_element_with_name(const xmlpp::Node* root,
     const Glib::ustring& name, bool case_sensitive = false);
 
 std::function<bool(const xmlpp::Node*)> make_ent_node_finder(
